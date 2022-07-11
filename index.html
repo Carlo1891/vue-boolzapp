@@ -8,36 +8,131 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
         <link rel="stylesheet" href="./css/style.css">
+        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+        <script src="https://unpkg.com/dayjs@1.8.21/dayjs.min.js"></script>
     </head>
     
     <body>
-
         <div id="app" class="background d-flex align-items-center justify-content-center">
+
             <div class="box-container d-flex">
+                <!-- Colonna sinistra come Spotify -->
                 <aside class="sidebar overflow-hidden d-flex flex-column">
-
+                    <!-- Utente con un bel codino -->
                     <section class="p-2 d-flex justify-content-between align-items-center">
-                        <div>
 
+                        <!-- Immagine e nome -->
+                        <div>
                             <img class="avatar-image" src="img/avatar_io.jpg" alt="Avatar utente"/>
-                            <p class="fw-bold d-inline">Carlo</p>
+                            <p class="fw-bold d-inline">Carlo Floris con la coda</p>
+                        </div>
+
+                        <!-- icone utente -->
+                        <div class="icons">
+                            <i class="px-2 fas fa-circle-notch"></i>
+                            <i class="px-2 fas fa-comment-alt"></i>
+                            <i class="px-2 fas fa-ellipsis-v"></i>
+                        </div>
+
+                    </section>
+                    <!-- Notifiche! On e off -->
+                    <section class="p-3 notify-container d-flex align-items-center">
+                    <!-- funzione che al click cambia il testo e operatore ternario che aggiunge le classi in base al testo -->
+                        <div class="notify-icon rounded-circle me-3" :class="notify ? 'notify-icon-off' : 'notify-icon-on'" @click="notifyOnOff()"></div>
+
+                        <div class="d-flex flex-column justify-content-center">
+
+                            <div v-if= "notify">
+                                <p class="text-size m-0"><strong>Ricevi notifiche di nuovi messaggi</strong></p>
+                                <a class="link small-text-size" href="#" @click="notifyOnOff()">Attiva notifiche desktop</a>
+                            </div>
+
+                            <div v-if= "!notify">
+                                <p class="text-size m-0"><strong>Disattiva notifiche di nuovi messaggi</strong></p>
+                                <a class="link small-text-size" href="#" @click="notifyOnOff()">Disattiva notifiche desktop</a>
+                            </div>
 
                         </div>
                     </section>
+                    <!-- Prova ricerca -->
+                    <section class="search-container rounded m-2 px-2 py-1 d-flex">
 
-                    <div class="icons">
+                        <i class="align-self-center pe-3 icons fas fa-search"></i>
+                        <input class="search input text-size" placeholder="Cerca o inizia una nuova chat" v-model="searchName" type="text"/>
 
-                        <i class="px-2 fas fa-circle-notch"></i>
-                        <i class="px-2 fas fa-comment-alt"></i>
-                        <i class="px-2 fas fa-ellipsis-v"></i>
+                    </section>
+                    <section class="contacts-list-container overflow-auto me-3 border-end">
+                    <!-- Creazione di tutti i contatti -->
+                        <div v-for="(contact, i) in contacts" class="contact-container" >
 
-                    </div>
+                            <div v-if="contact.name.toLowerCase().includes(searchName)" class="p-3" @click="changeChat(i)" :class="{'selected-contact': currentIndex === i}">
+                                <img class="avatar-image":src="['img/avatar' + contact.avatar + '.jpg']"alt=""/>
+                                <p class="fw-bold d-inline">{{contact.name}}</p>
+                            </div>
 
+                        </div>
+                    </section>
                 </aside>
+
+                <main class="main d-flex flex-column justify-content-between">
+                    <section class="chat-control-section p-2 d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                        <!-- Al click sul contatto, oltre alla chat aggiorno il nome e l'avatar del contatto -->
+
+                            <img class="avatar-image" :src="['img/avatar' + contacts[currentIndex].avatar + '.jpg']" alt="Avatar utente"/>
+                            
+                            <div class="">
+                            <div class="fw-bold">{{contacts[currentIndex].name}}</div>
+                            <div class="small-text-size">Ultimo accesso il {{getLastAccess(currentIndex)}}</div>
+                            </div>
+
+                        </div>
+
+                        <div class="icons">
+
+                            <i class="px-2 icons fas fa-search"></i>
+                            <i class="px-2 fas fa-paperclip"></i>
+                            <i class="px-2 fas fa-ellipsis-v"></i>
+
+                        </div>
+
+                    </section>
+                    <!-- Impostazione Chat -->
+                    <section class="chat-bg overflow-auto me-3">
+
+                        <div v-for="(message, i) in contacts[currentIndex].messages" class="message-container">
+                            <div class="chat-message mx-5 my-3 py-2 px-3" :class="message.status">
+                                <div class="d-flex justify-content-between">
+
+                                    <div class="text-break">{{message.message}}</div>
+                                    <i class="ps-4 icons fas fa-chevron-down" @click="openModal(i)"></i>
+
+                                </div>
+
+                                <div class="small-text-size text-end">{{message.date}}</div>
+                                <div class="mod-box rounded" v-if="modale === i">
+
+                                    <div class="message-option py-2 px-4">Message info</div>
+                                    <div class="message-option py-2 px-4" @click="deleteMex(currentIndex)">Delete message</div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Input per scrivere un mesaggio con la funzione sendMessage -->
+                    <section class="chat-control-section d-flex justify-content-center align-items-center">
+                        <i class="message-input-icon far fa-smile"></i>
+                        <input class="mx-4 message input rounded text-size" placeholder="Scrivi un messaggio" v-model="temporaryMex" @keyup.enter="sendMessage(currentIndex)" type="text"/>
+                        <i class="message-input-icon fas fa-microphone"></i>
+                    </section>
+
+                </main>
+      
             </div>
+      
         </div>
-    
-        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
         <script src="./js/main.js"></script>
     </body>
 </html>

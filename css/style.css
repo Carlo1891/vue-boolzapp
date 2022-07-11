@@ -1,1 +1,205 @@
 /* Commenti */
+
+/* Milestone 1
+Replica della grafica con la possibilità di avere messaggi scritti dall’utente (verdi) e dall’interlocutore (bianco) assegnando due classi CSS diverse
+Visualizzazione dinamica della lista contatti: tramite la direttiva v-for, visualizzare nome e immagine di ogni contatto
+
+Milestone 2
+Visualizzazione dinamica dei messaggi: tramite la direttiva v-for, visualizzare tutti i messaggi relativi al contatto attivo all’interno del pannello della conversazione
+Click sul contatto mostra la conversazione del contatto cliccato
+
+
+Milestone 3
+Aggiunta di un messaggio: l’utente scrive un testo nella parte bassa e digitando “enter” il testo viene aggiunto al thread sopra, come messaggio verde
+Risposta dall’interlocutore: ad ogni inserimento di un messaggio, l’utente riceverà un “ok” come risposta, che apparirà dopo 1 secondo. 
+
+Milestone 4
+Ricerca utenti: scrivendo qualcosa nell’input a sinistra, vengono visualizzati solo i contatti il cui nome contiene le lettere inserite (es, Marco, Matteo Martina -> Scrivo “mar” rimangono solo Marco e Martina)
+
+Milestone 5 - opzionale
+Cancella messaggio: cliccando sul messaggio appare un menu a tendina che permette di cancellare il messaggio selezionato
+
+Visualizzazione ora e ultimo messaggio inviato/ricevuto nella lista dei contatti
+*/
+
+.icons {
+    color: rgb(165, 165, 165);
+    font-size: 18px;
+}
+  
+.small-text-size {
+    font-size: 12px;
+    color: rgb(112, 112, 112);
+}
+  
+  
+.background {
+    height: 100vh;
+    background: linear-gradient(180deg, rgb(21, 124, 119) 15%, rgb(200, 200, 200) 15%);
+}
+  
+.box-container {
+    height: 80%;
+    min-height: 400px;
+    width: 90%;
+    min-width: 900px;
+    max-width: 1200px;
+    background-color: #fff;
+    border: 1px solid rgb(179, 179, 179);
+    box-shadow: 0 0 30px 2px rgba(111, 143, 135, 0.5);
+}
+  
+/* sidebar */
+  
+.sidebar {
+    height: 100%;
+    width: 35%;
+    min-width: 350px;
+    max-width: 500px;
+    border-right: 1px solid rgb(180, 180, 180);
+}
+  
+.contacts-list-container {
+    height: 100%;
+}
+  
+.avatar-image {
+    height: 50px;
+    border-radius: 50%;
+}
+  
+.selected-contact {
+    background-color: #cdcfcf;
+}
+  
+/* sezione attiva/disattiva notifiche */
+  
+.notify-container {
+    background-color: #9fd8f8;
+    height: 70px;
+}
+  
+.notify-icon {
+    color: #9fd8f8;
+    background-color: #fff;
+    width: 45px;
+    height: 45px;
+    line-height: 45px;
+    text-align: center;
+}
+  
+.notify-icon-on::before {
+    content: "\f0f3";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 800;
+}
+  
+.notify-icon-off::before {
+    content: "\f1f6";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 800;
+}
+  
+/* input di ricerca contatti e immissione nuovo messaggio*/
+  
+.search-container {
+    border: 1px solid #e9ebec;
+}
+  
+.input {
+    border: none;
+    outline: none;
+}
+  
+.input.search {
+    width: calc(100% - 40px);
+    padding: 3px;
+}
+  
+.input.message {
+    width: 80%;
+    padding: 10px;
+}
+  
+/* main */
+  
+.main {
+    width: 65%;
+}
+  
+/* sezione info contatto (in alto) + sezione input messaggio (in basso) */
+  
+.chat-control-section {
+    height: 65px;
+    background-color: #eae9ea;
+}
+  
+.message-input-icon {
+    font-size: 25px;
+    color: rgb(100, 100, 100);
+}
+  
+/* sezione chat */
+  
+.chat-bg {
+    height: calc(100% - 120px);
+    background: url(../img/mine.jpg) repeat 50% 50%;
+    font-weight: 500;
+}
+  
+.message-container::after{
+    content: "";
+    clear: both;
+    display: table;
+}
+  
+.sent,
+.received {
+    border-radius: 15px;
+    min-width: 200px;
+    max-width: 300px;
+    box-shadow: 0 0 15px 1px rgba(111, 143, 135, 0.4);
+}
+  
+.sent {
+    background-color: #dcf8c0;
+    float: right;
+}
+  
+.received {
+    background-color: #fff;
+    float: left;
+}
+  
+.chat-message {
+    position: relative;
+}
+  
+.mod-box {
+    position: absolute;
+    background-color: #fff;
+    top: 35px;
+    right: 10px;
+    z-index: 1000;
+}
+  
+.message-option {
+    color: rgb(112, 112, 112);
+}
+  
+/* hover */
+  
+.contact-container:hover {
+    background-color: #e9ebec;
+    cursor: pointer;
+}
+  
+.notify-icon-on:hover,
+.notify-icon-off:hover,
+.link:hover,
+.fas:hover,
+.far:hover,
+.message-option:hover {
+    color: #419388;
+    cursor: pointer;
+}
