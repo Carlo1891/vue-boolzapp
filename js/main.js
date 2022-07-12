@@ -188,8 +188,8 @@ methods: {
         this.currentIndex = index
         this.modale = null;
     },
+
     // con questo metodo se la v:modal data all'input della chat è diversa da una stringa vuota pusho la stringa in un oggetto(con data e status)
-    // che automaticamente si visualizzerà come messaggio nella chat, poi svuoto la stringa e compare una risposta random
     sendMessage: function(index){
         if (this.temporaryMex !== ''){
         this.contacts[index].messages.push({ date: this.getDate(), message: this.temporaryMex, status: 'sent'});
@@ -198,6 +198,7 @@ methods: {
         this.scrollToEnd();
         }
     },
+
     // con questo metodo pusho le risposte random dopo un secondo dall'invio del messaggio (inserito in sendMessage)
     answerMessage: function(index) {
         setTimeout(()=>{
@@ -205,6 +206,7 @@ methods: {
             this.contacts[index].messages.push({ date: this.getDate(), message: this.answer[rand], status: 'received'});
          },1000);
     },
+
     // con questo metodo porto lo scroll all'ultimo messaggio visualizzato (inserito in sendMessage)
     scrollToEnd: function() {  
         setTimeout(()=>{
@@ -212,20 +214,19 @@ methods: {
         container.scrollTo(0, container.scrollHeight)
     },1200);
     },
-    // bonus: ho creato questo metodo per settare la ricezione di notifiche e cambiare icona
-    notifyOnOff: function(){
-        this.notify = !this.notify
-    },
+
     // con questo metodo e la libreria dayJs creo ora e data dinamici, (inserito in sendMessage e answerMessage)
     getDate() {
         return dayjs().format('DD/MM/YYYY  HH:mm:ss')
     },
+
     // con questo metodo creo una funzione che individua l'ultimo messaggio della chat
     // (utilizzato per aggiungere dinamicamente il giorno e l'ora dell'ultimo accesso del contatto)
     getLastAccess: function(index) {  
         let lastMex= this.contacts[index].messages.length -1;
         return this.contacts[index].messages[lastMex].date;
     },
+
     // con questo metodo setto la modale in false se è uguale all'indice del messaggio, quindi se aperta (= all'indice) si chiude, se è chiusa (=false) si apre
     openModal(index){
         if(this.modale === index){
@@ -234,6 +235,7 @@ methods: {
             this.modale = index;
         }
     },
+    // cancellazione dei messaggi
     deleteMex(index){
         this.contacts[index].messages.splice(this.modale, 1)
         this.modale = null;
