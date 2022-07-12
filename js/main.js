@@ -172,47 +172,71 @@ new Vue({
         ],
 
         // Risposte casuali prova
-        currentIndex: 0,
-        temporaryMex: '',
-        searchName: '',
-        notify: true,
-        modale: null,
-        repliesList: [
-            'Ma de che', 'Spettacolo', 'Non saprei!', 'Se vabbè!', 'E andiamo!',
-            'Ma chi sei?', 'Buongiorno', 'Raccontami', ':)'  
+        answer: [
+            'Lascia sta che ho una giornata', 'Ehi! Come va?', 'Che ne so?', 'Eh vabbè lallero', 'Stasera quindi libetta!',
+            'Ma chi sei?', 'Buongiorno', 'Hai fatto i soldi si che non rispondi più!' 
         ],
+    currentIndex: 0,
+    temporaryMex: '',
+    searchName: '',
+    notify: true,
+    modale: null,
+},
+methods: {
+    // con questo metodo, quando clicco su un contatto visualizzo la chat corrispondente (setto currentIndex allo stesso valore dell'indice dei contatti)
+    changeChat: function(index) {
+        this.currentIndex = index
+        this.modale = null;
     },
-    methods: {
-        // Quando clicco su un contatto visualizzo la chat corrispondente
-            function(index) {
-            this.currentIndex = index
-            this.modale = null;
-        },
-        // con questo metodo pusho le risposte random dopo un secondo dall'invio del messaggio (inserito in sendMessage)
-        answerMessage: function(index) {
-            setTimeout(()=>{
-                let rand = Math.floor(Math.random()*this.repliesList.length);
-                this.contacts[index].messages.push({ date: this.getDate(), text: this.repliesList[rand], status: 'received'});
-             },1000);
-        },
-        // con questo metodo porto lo scroll all'ultimo messaggio visualizzato (inserito in sendMessage)
-        scrollToEnd: function() {  
-            setTimeout(()=>{
-            let container = this.$el.querySelector(".chat-bg");
-            container.scrollTo(0, container.scrollHeight)
-        },1200);
-        },
-        // con questo metodo e la libreria dayJs creo ora e data dinamici, (inserito in sendMessage e answerMessage)
-        getDate() {
-            return dayjs().format('DD/MM/YYYY  HH:mm:ss')
-        },
-        // con questo metodo creo una funzione che individua l'ultimo messaggio della chat
-        // (utilizzato per aggiungere dinamicamente il giorno e l'ora dell'ultimo accesso del contatto)
-        getLastAccess: function(index) {  
-            let lastMex= this.contacts[index].messages.length -1;
-            return this.contacts[index].messages[lastMex].date;
-        },
-        // con questo metodo setto la modale in false se è uguale all'indice del messaggio, quindi se aperta (= all'indice) si chiude, se è chiusa (=false) si apre
-        
+    // con questo metodo se la v:modal data all'input della chat è diversa da una stringa vuota pusho la stringa in un oggetto(con data e status)
+    // che automaticamente si visualizzerà come messaggio nella chat, poi svuoto la stringa e compare una risposta random
+    sendMessage: function(index){
+        if (this.temporaryMex !== ''){
+        this.contacts[index].messages.push({ date: this.getDate(), message: this.temporaryMex, status: 'sent'});
+        this.temporaryMex = '';
+        this.answerMessage(index);
+        this.scrollToEnd();
+        }
     },
+    // con questo metodo pusho le risposte random dopo un secondo dall'invio del messaggio (inserito in sendMessage)
+    answerMessage: function(index) {
+        setTimeout(()=>{
+            let rand = Math.floor(Math.random()*this.answer.length);
+            this.contacts[index].messages.push({ date: this.getDate(), message: this.answer[rand], status: 'received'});
+         },1000);
+    },
+    // con questo metodo porto lo scroll all'ultimo messaggio visualizzato (inserito in sendMessage)
+    scrollToEnd: function() {  
+        setTimeout(()=>{
+        let container = this.$el.querySelector(".chat-bg");
+        container.scrollTo(0, container.scrollHeight)
+    },1200);
+    },
+    // bonus: ho creato questo metodo per settare la ricezione di notifiche e cambiare icona
+    notifyOnOff: function(){
+        this.notify = !this.notify
+    },
+    // con questo metodo e la libreria dayJs creo ora e data dinamici, (inserito in sendMessage e answerMessage)
+    getDate() {
+        return dayjs().format('DD/MM/YYYY  HH:mm:ss')
+    },
+    // con questo metodo creo una funzione che individua l'ultimo messaggio della chat
+    // (utilizzato per aggiungere dinamicamente il giorno e l'ora dell'ultimo accesso del contatto)
+    getLastAccess: function(index) {  
+        let lastMex= this.contacts[index].messages.length -1;
+        return this.contacts[index].messages[lastMex].date;
+    },
+    // con questo metodo setto la modale in false se è uguale all'indice del messaggio, quindi se aperta (= all'indice) si chiude, se è chiusa (=false) si apre
+    openModal(index){
+        if(this.modale === index){
+            this.modale = false;
+        } else {
+            this.modale = index;
+        }
+    },
+    deleteMex(index){
+        this.contacts[index].messages.splice(this.modale, 1)
+        this.modale = null;
+    }
+},
 });
